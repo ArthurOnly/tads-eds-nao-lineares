@@ -17,13 +17,17 @@ public class BinarySearchTree {
     private int tamanho;
     private Comparator comparator;
 
-    public BinarySearchTree(Object o, Comparator comparator)
+    public BinarySearchTree(Object o, Comparator<Object> comparator)
     {
         this.root = new BinaryTreeNode(o);
         this.root.setLeftChild(new BinaryTreeNode(null, this.root));
         this.root.setRightChild(new BinaryTreeNode(null, this.root));
         this.tamanho++;
         this.comparator = comparator;
+    }
+
+    public BinaryTreeNode getRoot() {
+        return this.root;
     }
 
     public int size()
@@ -132,7 +136,7 @@ public class BinarySearchTree {
         return 1 + depth(node.getRootNode());
     }
 
-    public BinaryTreeNode search(Object o)
+    public BinaryTreeNode search(Object o) 
     {
         return this.searchRec(o, this.root);
     }
@@ -148,7 +152,7 @@ public class BinarySearchTree {
         return searchRec(key, node.getRightChild());
     }
 
-    public void insert(Object key)
+    public void insert(Object key) throws RuntimeException 
     {
         BinaryTreeNode node = this.search(key);
         if (node.getObject() == null){
