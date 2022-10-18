@@ -30,6 +30,10 @@ public class BinarySearchTree {
         return this.root;
     }
 
+    public void setRoot(BinaryTreeNode node) {
+        this.root = node;
+    }
+
     public int size()
     {
         return this.tamanho;
@@ -62,6 +66,13 @@ public class BinarySearchTree {
         return array.iterator();
     }
 
+    public ArrayList<BinaryTreeNode> elementsArray()
+    {
+        ArrayList<BinaryTreeNode> array = new ArrayList<>();
+        this.nosRec(array, this.root);
+        return array;
+    }
+
     private void elementsRec(ArrayList array, BinaryTreeNode node)
     {
         if (node.getObject() == null) return;
@@ -72,12 +83,12 @@ public class BinarySearchTree {
 
     public Iterator nos()
     {
-        ArrayList array = new ArrayList<>();
+        ArrayList<BinaryTreeNode> array = new ArrayList<>();
         this.nosRec(array, this.root);
         return array.iterator();
     }
 
-    private void nosRec(ArrayList array, BinaryTreeNode node)
+    private void nosRec(ArrayList<BinaryTreeNode> array, BinaryTreeNode node)
     {
         if (node.getObject() == null) return;
         array.add(node);
@@ -162,7 +173,7 @@ public class BinarySearchTree {
             this.tamanho++;
         }
         else
-            throw new IllegalArgumentException("Elemento ja existe");
+            throw new IllegalArgumentException(String.format("Elemento %s ja existe", key));
     }
 
     public void remove(Object key)
