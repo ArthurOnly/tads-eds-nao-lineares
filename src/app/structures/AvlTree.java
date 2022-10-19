@@ -5,6 +5,7 @@ import java.lang.RuntimeException;
 
 import app.structures.utils.AvlTreeNode;
 import app.utils.AvlTreePrinter;
+import app.utils.InternetTreePrinter;
 import app.utils.NewAvlTreePrinter;
 
 public class AvlTree extends BinarySearchTree {
@@ -67,18 +68,25 @@ public class AvlTree extends BinarySearchTree {
 
         rightSubtreeLeftRoot.setRootNode(node);
         rightRoot.setLeftChild(node);
+        rightRoot.setRootNode(node.getRootNode());
         node.setRootNode(rightRoot);
         node.setRightChild(rightSubtreeLeftRoot);
-        node.setRootNode(null);
 
-        if ((AvlTreeNode) this.getRoot() == node) this.setRoot(rightRoot);
+        if ((AvlTreeNode) this.getRoot() == node) {
+            this.setRoot(rightRoot);
+        } else {
+            node.getRootNode().setLeftChild(rightRoot);
+        }
     }
 
     public void doubleLeftRotation(AvlTreeNode node) {
         System.out.println("DOuble left");
 
+        this.print();
         simpleRightRotation((AvlTreeNode) node.getRightChild());
+        this.print();
         simpleLeftRotation(node);
+        this.print();
     }
 
     public void simpleRightRotation(AvlTreeNode node) {
@@ -95,10 +103,15 @@ public class AvlTree extends BinarySearchTree {
 
         leftSubtreeRightRoot.setRootNode(node);
         leftRoot.setRightChild(node);
+        leftRoot.setRootNode(node.getRootNode());
         node.setRootNode(leftRoot);
         node.setLeftChild(leftSubtreeRightRoot);
 
-        if ((AvlTreeNode) this.getRoot() == node) this.setRoot(leftRoot);
+        if ((AvlTreeNode) this.getRoot() == node) {
+            this.setRoot(leftRoot);
+        } else {
+            node.getRootNode().setRightChild(leftRoot);
+        }
     }
 
     public void doubleRightRotation(AvlTreeNode node) {
@@ -123,6 +136,6 @@ public class AvlTree extends BinarySearchTree {
 
     @Override
     public void print() {
-        AvlTreePrinter.print(this);
+        InternetTreePrinter.print(this);
     }
 }
