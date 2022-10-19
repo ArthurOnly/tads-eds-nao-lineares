@@ -19,9 +19,9 @@ public class AvlTreePrinter {
             AvlTreeNode removed = treeLevel.removeFirst();
             
             if (temp.isEmpty()) {
-                printElement(numberOfElements / Math.pow(2, counter + 1), removed);
+                printElement(numberOfElements / Math.pow(2, counter - 2), removed);
             } else {
-                printElement(numberOfElements / Math.pow(2, counter), removed);
+                printElement(numberOfElements / Math.pow(2, counter - 3), removed);
             }
 
             if (removed == null) {
@@ -46,13 +46,18 @@ public class AvlTreePrinter {
 
     public static void printElement(double n, AvlTreeNode removed) {
         for (; n > 0; n--) {
-            System.out.print("    ");
+            System.out.print(" ");
         }
         if (removed == null) {
             System.out.print(" ");
         } else {
-            if (removed.getObject() != null)
-                 System.out.print(removed.getObject()+":"+removed.getBalanceFactor());
+            if (removed.getObject() != null){
+                AvlTreeNode root = (AvlTreeNode) removed.getRootNode();
+                Object pai = root != null ? root.getObject() : null;
+                System.out.print(removed.getObject()+":"+removed.getBalanceFactor()+";RO:"+pai+";L:"+removed.getLeftChild().getObject()+";R:"+removed.getRightChild().getObject());
+                //System.out.print(removed.getObject()+":"+removed.getBalanceFactor());
+                //System.out.print(removed.getObject()+":"+removed.getBalanceFactor()+";L:"+removed.getLeftChild().getObject()+";R:"+removed.getRightChild().getObject());
+            }
         }
     }
 

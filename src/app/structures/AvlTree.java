@@ -5,6 +5,7 @@ import java.lang.RuntimeException;
 
 import app.structures.utils.AvlTreeNode;
 import app.utils.AvlTreePrinter;
+import app.utils.NewAvlTreePrinter;
 
 public class AvlTree extends BinarySearchTree {
     public AvlTree(Object root, Comparator<Object> comparator) {
@@ -14,6 +15,14 @@ public class AvlTree extends BinarySearchTree {
         rootNode.setLeftChild(new AvlTreeNode(null, rootNode));
         rootNode.setRightChild(new AvlTreeNode(null, rootNode));
         super.setRoot(rootNode);
+    }
+
+    private int max(int num, int num2) {
+        return num > num2 ? num : num2;
+    }
+
+    private int min(int num, int num2) {
+        return num < num2 ? num : num2;
     }
 
     public void updateBalanceFactor(AvlTreeNode node, boolean isInsert) {
@@ -29,8 +38,8 @@ public class AvlTree extends BinarySearchTree {
 
         if (node.getBalanceFactor() == 2) {
             AvlTreeNode left = (AvlTreeNode) node.getLeftChild();
-            if (left.getBalanceFactor() == -1) simpleRightRotation(node);
-            if (left.getBalanceFactor() == 1) doubleRightRotation(node);
+            if (left.getBalanceFactor() == 1) simpleRightRotation(node);
+            if (left.getBalanceFactor() == -1) doubleRightRotation(node);
             return;
         }
 
@@ -45,26 +54,55 @@ public class AvlTree extends BinarySearchTree {
     }
 
     public void simpleLeftRotation(AvlTreeNode node) {
+        System.out.println("SimpleLeft");
+
         AvlTreeNode rightRoot = (AvlTreeNode) node.getRightChild();
         AvlTreeNode rightSubtreeLeftRoot = (AvlTreeNode) rightRoot.getLeftChild();
+
+        int newBB = node.getBalanceFactor() + 1 - min(rightRoot.getBalanceFactor(), 0);
+        int newAB = rightRoot.getBalanceFactor() + 1 + max(newBB, 0);
+
+        node.setBalanceFactor(newBB);
+        rightRoot.setBalanceFactor(newAB);
 
         rightSubtreeLeftRoot.setRootNode(node);
         rightRoot.setLeftChild(node);
         node.setRootNode(rightRoot);
         node.setRightChild(rightSubtreeLeftRoot);
+        node.setRootNode(null);
 
         if ((AvlTreeNode) this.getRoot() == node) this.setRoot(rightRoot);
     }
 
     public void doubleLeftRotation(AvlTreeNode node) {
+        System.out.println("DOuble left");
 
+        simpleRightRotation((AvlTreeNode) node.getRightChild());
+        simpleLeftRotation(node);
     }
 
     public void simpleRightRotation(AvlTreeNode node) {
+        System.out.println("SimpleRight");
 
+        AvlTreeNode leftRoot = (AvlTreeNode) node.getLeftChild();
+        AvlTreeNode leftSubtreeRightRoot = (AvlTreeNode) leftRoot.getRightChild();
+
+        int newBB = node.getBalanceFactor() + 1 - min(leftRoot.getBalanceFactor(), 0);
+        int newAB = leftRoot.getBalanceFactor() + 1 + max(newBB, 0);
+
+        node.setBalanceFactor(newBB);
+        leftRoot.setBalanceFactor(newAB);
+
+        leftSubtreeRightRoot.setRootNode(node);
+        leftRoot.setRightChild(node);
+        node.setRootNode(leftRoot);
+        node.setLeftChild(leftSubtreeRightRoot);
+
+        if ((AvlTreeNode) this.getRoot() == node) this.setRoot(leftRoot);
     }
 
     public void doubleRightRotation(AvlTreeNode node) {
+        System.out.println("Double right");
 
     }
 
