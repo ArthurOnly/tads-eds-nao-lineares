@@ -16,15 +16,56 @@ public class AvlTree extends BinarySearchTree {
         super.setRoot(rootNode);
     }
 
-    public void updateBalanceFactor(AvlTreeNode node, boolean onLeft, boolean isInsert) {
-        if (node == null) { return; }
+    public void updateBalanceFactor(AvlTreeNode node, boolean isInsert) {
+        AvlTreeNode prev = node;
+        node = (AvlTreeNode) node.getRootNode();
+        if (node == null) return;
+        boolean onLeft = node.getLeftChild() == prev;
+        
         node.setBalanceFactor(node.getBalanceFactor() + (onLeft ? 1 : -1) * (isInsert ? 1 : -1));
         
         if (node.getBalanceFactor() == 0 && isInsert) { return; }
         if (node.getBalanceFactor() != 0 && !isInsert) { return; }
 
+        if (node.getBalanceFactor() == 2) {
+            AvlTreeNode left = (AvlTreeNode) node.getLeftChild();
+            if (left.getBalanceFactor() == -1) simpleRightRotation(node);
+            if (left.getBalanceFactor() == 1) doubleRightRotation(node);
+            return;
+        }
 
-        updateBalanceFactor((AvlTreeNode) node.getRootNode(), onLeft, isInsert);        
+        if (node.getBalanceFactor() == -2) {
+            AvlTreeNode right = (AvlTreeNode) node.getRightChild();
+            if (right.getBalanceFactor() == -1) simpleLeftRotation(node);
+            if (right.getBalanceFactor() == 1) doubleLeftRotation(node);
+            return;
+        }
+
+        updateBalanceFactor(node, isInsert);        
+    }
+
+    public void simpleLeftRotation(AvlTreeNode node) {
+        AvlTreeNode rightRoot = (AvlTreeNode) node.getRightChild();
+        AvlTreeNode rightSubtreeLeftRoot = (AvlTreeNode) rightRoot.getLeftChild();
+
+        rightSubtreeLeftRoot.setRootNode(node);
+        rightRoot.setLeftChild(node);
+        node.setRootNode(rightRoot);
+        node.setRightChild(rightSubtreeLeftRoot);
+
+        if ((AvlTreeNode) this.getRoot() == node) this.setRoot(rightRoot);
+    }
+
+    public void doubleLeftRotation(AvlTreeNode node) {
+
+    }
+
+    public void simpleRightRotation(AvlTreeNode node) {
+
+    }
+
+    public void doubleRightRotation(AvlTreeNode node) {
+
     }
 
     @Override
@@ -39,7 +80,7 @@ public class AvlTree extends BinarySearchTree {
         node.setRightChild(new AvlTreeNode(null, node));
         node.setBalanceFactor(0);
 
-        this.updateBalanceFactor((AvlTreeNode) node.getRootNode(), (AvlTreeNode) node.getRootNode().getLeftChild() == node, true);
+        this.updateBalanceFactor(node, true);
     }
 
     @Override

@@ -19,9 +19,9 @@ public class TestAvlTree implements ITest {
         tree.insert(36);
         tree.print();
         System.out.println("--------------------");
-        tree.insert(33);
-        tree.print();
-        System.out.println("--------------------");
+        // tree.insert(33);
+        // tree.print();
+        // System.out.println("--------------------");
 
         // tree.insert(31);
         // tree.insert(35);
