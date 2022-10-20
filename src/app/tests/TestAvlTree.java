@@ -4,6 +4,7 @@ import app.interfaces.ITest;
 import app.structures.AvlTree;
 import app.structures.utils.AvlTreeNode;
 import app.utils.GenericComparator;
+import java.util.Random;
 
 public class TestAvlTree implements ITest {
     public static void run() {
@@ -56,5 +57,17 @@ public class TestAvlTree implements ITest {
         // System.out.println("--------------------");
         // tree.insert(31);
         // tree.print();
+
+        // test random
+        Random gerador = new Random();
+        for (int i = 0; i < 10; i++) {
+            int num = gerador.nextInt(40);
+            AvlTreeNode exists = (AvlTreeNode) tree.search(num);
+            if (exists.getObject() == null)
+                tree.insert(num);
+            tree.print();
+            System.out.println("-------------------------");
+        }
+        //tree.print();
     }
 }

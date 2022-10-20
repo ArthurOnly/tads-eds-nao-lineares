@@ -54,7 +54,7 @@ public class AvlTreePrinter {
             if (removed.getObject() != null){
                 AvlTreeNode root = (AvlTreeNode) removed.getRootNode();
                 Object pai = root != null ? root.getObject() : null;
-                System.out.print(removed.getObject()+":"+removed.getBalanceFactor()+";RO:"+pai+";L:"+removed.getLeftChild().getObject()+";R:"+removed.getRightChild().getObject());
+                System.out.print(removed.getObject()+":"+removed.getBalanceFactor());
                 //System.out.print(removed.getObject()+":"+removed.getBalanceFactor());
                 //System.out.print(removed.getObject()+":"+removed.getBalanceFactor()+";L:"+removed.getLeftChild().getObject()+";R:"+removed.getRightChild().getObject());
             }

@@ -90,8 +90,8 @@ public class AvlTree extends BinarySearchTree {
         AvlTreeNode leftRoot = (AvlTreeNode) node.getLeftChild();
         AvlTreeNode leftSubtreeRightRoot = (AvlTreeNode) leftRoot.getRightChild();
 
-        int newBB = node.getBalanceFactor() + 1 - min(leftRoot.getBalanceFactor(), 0);
-        int newAB = leftRoot.getBalanceFactor() + 1 + max(newBB, 0);
+        int newBB = node.getBalanceFactor() - 1 - max(leftRoot.getBalanceFactor(), 0);
+        int newAB = leftRoot.getBalanceFactor() - 1 + min(newBB, 0);
 
         node.setBalanceFactor(newBB);
         leftRoot.setBalanceFactor(newAB);
@@ -133,6 +133,6 @@ public class AvlTree extends BinarySearchTree {
 
     @Override
     public void print() {
-        InternetTreePrinter.print(this);
+        AvlTreePrinter.print(this);
     }
 }
