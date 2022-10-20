@@ -16,16 +16,16 @@ public class TestAvlTree implements ITest {
         // tree.insert(34);
         // tree.print();
 
-        // test simple left not root
-        tree.insert(31);
-        tree.insert(33);
-        tree.print();
-        System.out.println("--------------------");
-        tree.insert(34);
-        tree.print();
-        System.out.println("--------------------");
-        tree.insert(35);
-        tree.print();
+        // // test simple left not root
+        // tree.insert(31);
+        // tree.insert(33);
+        // tree.print();
+        // System.out.println("--------------------");
+        // tree.insert(34);
+        // tree.print();
+        // System.out.println("--------------------");
+        // tree.insert(35);
+        // tree.print();
 
         // //test simple right
         // tree.insert(31);
@@ -34,12 +34,27 @@ public class TestAvlTree implements ITest {
         // tree.insert(30);
         // tree.print();
 
-        // test double left
+        // //test simple right not root
+        // tree.insert(33);
+        // tree.insert(31);
+        // tree.print();
+        // System.out.println("--------------------");
+        // tree.insert(30);
+        // tree.insert(29);
+        // tree.print();
+
+        // // test double left
         // tree.insert(34);
-        //tree.print();
+        // tree.print();
         // System.out.println("--------------------");
         // tree.insert(33);
-        //tree.print();
+        // tree.print();
 
+        // // test double right
+        // tree.insert(30);
+        // tree.print();
+        // System.out.println("--------------------");
+        // tree.insert(31);
+        // tree.print();
     }
 }

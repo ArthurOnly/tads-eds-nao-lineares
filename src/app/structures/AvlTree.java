@@ -55,8 +55,7 @@ public class AvlTree extends BinarySearchTree {
     }
 
     public void simpleLeftRotation(AvlTreeNode node) {
-        System.out.println("SimpleLeft");
-
+        AvlTreeNode rotationRoot = (AvlTreeNode) node.getRootNode();
         AvlTreeNode rightRoot = (AvlTreeNode) node.getRightChild();
         AvlTreeNode rightSubtreeLeftRoot = (AvlTreeNode) rightRoot.getLeftChild();
 
@@ -75,23 +74,19 @@ public class AvlTree extends BinarySearchTree {
         if ((AvlTreeNode) this.getRoot() == node) {
             this.setRoot(rightRoot);
         } else {
-            node.getRootNode().setLeftChild(rightRoot);
+            if (rotationRoot.getLeftChild() == node)
+                rotationRoot.setLeftChild(rightRoot);
+            else rotationRoot.setRightChild(rightRoot);
         }
     }
 
     public void doubleLeftRotation(AvlTreeNode node) {
-        System.out.println("DOuble left");
-
-        this.print();
         simpleRightRotation((AvlTreeNode) node.getRightChild());
-        this.print();
         simpleLeftRotation(node);
-        this.print();
     }
 
     public void simpleRightRotation(AvlTreeNode node) {
-        System.out.println("SimpleRight");
-
+        AvlTreeNode rotationRoot = (AvlTreeNode) node.getRootNode();
         AvlTreeNode leftRoot = (AvlTreeNode) node.getLeftChild();
         AvlTreeNode leftSubtreeRightRoot = (AvlTreeNode) leftRoot.getRightChild();
 
@@ -109,14 +104,16 @@ public class AvlTree extends BinarySearchTree {
 
         if ((AvlTreeNode) this.getRoot() == node) {
             this.setRoot(leftRoot);
-        } else {
-            node.getRootNode().setRightChild(leftRoot);
+        } else { 
+            if (rotationRoot.getLeftChild() == node)
+                rotationRoot.setLeftChild(leftRoot);
+            else rotationRoot.setRightChild(leftRoot);
         }
     }
 
     public void doubleRightRotation(AvlTreeNode node) {
-        System.out.println("Double right");
-
+        simpleLeftRotation((AvlTreeNode) node.getLeftChild());
+        simpleRightRotation(node);
     }
 
     @Override
