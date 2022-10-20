@@ -7,8 +7,17 @@ import app.utils.GenericComparator;
 import java.util.Random;
 
 public class TestAvlTree implements ITest {
-    public static void run() {
+    public static void run() { //32
         AvlTree tree = new AvlTree(32, new GenericComparator());
+
+        // tree.insert(2);
+        // tree.insert(3);
+        // tree.insert(4);
+        // tree.insert(5);
+        // tree.insert(6);
+        // tree.insert(7);
+        // tree.insert(8);
+        // tree.print();
         
         // //test simple left
         // tree.insert(33);
@@ -65,9 +74,18 @@ public class TestAvlTree implements ITest {
             AvlTreeNode exists = (AvlTreeNode) tree.search(num);
             if (exists.getObject() == null)
                 tree.insert(num);
-            tree.print();
             System.out.println("-------------------------");
+            tree.print();
         }
-        //tree.print();
+
+        // // Test remove
+        // tree.insert(34);
+        // tree.insert(35);
+        // tree.insert(31);
+        // tree.insert(30);
+        // tree.print();
+        // System.out.println("----------");
+        // tree.remove(35);
+        // tree.print();
     }
 }
