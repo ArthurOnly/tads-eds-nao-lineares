@@ -61,11 +61,9 @@ public class AvlTree extends BinarySearchTree {
     }
 
     public void simpleLeftRotation(AvlTreeNode node) {
-        System.out.println("Simple left");
         AvlTreeNode rotationRoot = (AvlTreeNode) node.getRootNode();
         AvlTreeNode rightRoot = (AvlTreeNode) node.getRightChild();
         AvlTreeNode rightSubtreeLeftRoot = (AvlTreeNode) rightRoot.getLeftChild();
-        System.out.println(rightSubtreeLeftRoot);
 
         int newBB = node.getBalanceFactor() + 1 - min(rightRoot.getBalanceFactor(), 0);
         int newAB = rightRoot.getBalanceFactor() + 1 + max(newBB, 0);
