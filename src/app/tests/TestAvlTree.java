@@ -69,15 +69,15 @@ public class TestAvlTree implements ITest {
         // tree.print();
 
         // test random
-        // Random gerador = new Random();
-        // for (int i = 0; i < 10; i++) {
-        //     int num = gerador.nextInt(40);
-        //     AvlTreeNode exists = (AvlTreeNode) tree.search(num);
-        //     if (exists.getObject() == null)
-        //         tree.insert(num);
-        //     System.out.println("-------------------------");
-        //     tree.print();
-        // }
+        Random gerador = new Random();
+        for (int i = 0; i < 10; i++) {
+            int num = gerador.nextInt(40);
+            AvlTreeNode exists = (AvlTreeNode) tree.search(num);
+            if (exists.getObject() == null)
+                tree.insert(num);
+            System.out.println("-------------------------");
+            tree.print();
+        }
 
         // // Test remove
         // tree.insert(34);
