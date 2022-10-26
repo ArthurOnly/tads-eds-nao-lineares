@@ -8,6 +8,11 @@ public class RedBlackNode extends BinaryTreeNode {
         this.isBlack = false;
     }
 
+    public RedBlackNode(Object o, RedBlackNode root, boolean isBlack){
+        super(o, root);
+        this.isBlack = isBlack;
+    }
+
     public void setIsBlack(boolean isBlack) {
         this.isBlack = isBlack;
     }
