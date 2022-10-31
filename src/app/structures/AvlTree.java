@@ -145,10 +145,28 @@ public class AvlTree extends BinarySearchTree {
             throw new RuntimeException(String.format("Elemento não existe", value));
         }
 
-        node.setObject(null);
-        node.setLeftChild(null);
-        node.setRightChild(null);
-        node.setBalanceFactor(0);
+        AvlTreeNode removedRoot = (AvlTreeNode) node.getRootNode();
+        
+        if (isExternal(node.getLeftChild()) && isExternal(node.getRightChild())){
+            node.setObject(null);
+            node.setLeftChild(null);
+            node.setRightChild(null);
+            node.setBalanceFactor(0);
+        } else if (isExternal(node.getLeftChild()) && !isExternal(node.getRightChild())){
+            if (removedRoot.getLeftChild() == node) {
+                removedRoot.setLeftChild(node.getRightChild());
+            } else {
+                removedRoot.setRightChild(node.getRightChild());
+            }
+        } else if (!isExternal(node.getLeftChild()) && isExternal(node.getRightChild())){
+            if (removedRoot.getLeftChild() == node) {
+                removedRoot.setLeftChild(node.getLeftChild());
+            } else {
+                removedRoot.setRightChild(node.getLeftChild());
+            }
+        } else {
+
+        }
 
         this.updateBalanceFactor(node, false);
     }
