@@ -10,18 +10,44 @@ public class TestAvlTree implements ITest {
     public static void run() { //32
         AvlTree tree = new AvlTree(32, new GenericComparator());
 
-        tree.insert(2);
-        tree.insert(3);
-        tree.insert(4);
-        tree.insert(5);
-        tree.insert(6);
-        tree.print();
-        tree.remove(32);
-        tree.print();
-        // tree.insert(7);
-        // tree.insert(8);
-        // tree.insert(9);
+        // // remove with left child
+        // tree.insert(25);
+        // tree.insert(37);
+        // tree.insert(22);
         // tree.print();
+        // System.out.println("----");
+        // tree.remove(25);
+        // tree.print();
+
+        // // remove with right child
+        // tree.insert(25);
+        // tree.insert(37);
+        // tree.insert(26);
+        // tree.print();
+        // System.out.println("----");
+        // tree.remove(25);
+        // tree.print();
+
+        // // remove folha
+        // tree.insert(25);
+        // tree.insert(37);
+        // tree.insert(26);
+        // tree.print();
+        // System.out.println("----");
+        // tree.remove(26);
+        // tree.print();
+
+        // remove with both childs
+        tree.insert(24);
+        tree.insert(37);
+        tree.insert(26);
+        tree.insert(22);
+        tree.insert(38);
+        tree.insert(25);
+        tree.print();
+        System.out.println("----");
+        tree.remove(24);
+        tree.print();
         
         // //test simple left
         // tree.insert(33);
