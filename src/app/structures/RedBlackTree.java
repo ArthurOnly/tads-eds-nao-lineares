@@ -73,27 +73,54 @@ public class RedBlackTree extends BinarySearchTree {
         } 
     }
 
-    private void fatherRedGrandFatherBlackUncleBlackRebalance(RedBlackTreeNode node, RedBlackTreeNode fatherNode, RedBlackTreeNode grandFatherNode, RedBlackTreeNode uncleNode) {
-
+    private void fatherRedGrandFatherBlackUncleBlackRebalance(RedBlackTreeNode node, RedBlackTreeNode father, RedBlackTreeNode grandFather, RedBlackTreeNode uncleNode) {
+        if (grandFather.getLeftChild() == father) {
+            if (father.getLeftChild() == node) {
+                simpleLeftRotation(node, father, grandFather);
+            } else {
+                doubleRightRotation(node, father, grandFather);
+            }
+        } else {
+            if (father.getRightChild() == node) {
+                simpleRightRotation(node, father, grandFather);
+            } else {
+                doubleRightRotation(node, father, grandFather);
+            }
+        }
     }
 
     public void simpleLeftRotation(RedBlackTreeNode node, RedBlackTreeNode father, RedBlackTreeNode grandFather) {
-        
+        father.setRootNode(grandFather.getRootNode());
+        father.setLeftChild(grandFather);
+
+        grandFather.setRootNode(father);
+        grandFather.setRightChild(newEmptyChild(grandFather));
+
+        if (this.getRoot() == grandFather){
+            this.setRoot(father);
+        }
     }
 
-    public void doubleLeftRotation(RedBlackTreeNode node) {
-        simpleRightRotation((RedBlackTreeNode) node.getRightChild());
-        //simpleLeftRotation(node);
+    public void doubleLeftRotation(RedBlackTreeNode node, RedBlackTreeNode father, RedBlackTreeNode grandFather) {
+        simpleRightRotation(node, father, grandFather);
+        simpleLeftRotation(node, father, grandFather);
     }
 
-    public void simpleRightRotation(RedBlackTreeNode node) {
-        RedBlackTreeNode father = (RedBlackTreeNode) node.getRootNode();
+    public void simpleRightRotation(RedBlackTreeNode node, RedBlackTreeNode father, RedBlackTreeNode grandFather) {
+        father.setRootNode(grandFather.getRootNode());
+        father.setRightChild(grandFather);
 
+        grandFather.setRootNode(father);
+        grandFather.setLeftChild(newEmptyChild(grandFather));
+
+        if (this.getRoot() == grandFather){
+            this.setRoot(father);
+        }
     }
 
-    public void doubleRightRotation(RedBlackTreeNode node) {
-        //simpleLeftRotation((RedBlackTreeNode) node.getLeftChild());
-        simpleRightRotation(node);
+    public void doubleRightRotation(RedBlackTreeNode node, RedBlackTreeNode father, RedBlackTreeNode grandFather) {
+        simpleLeftRotation(node, father, grandFather);
+        simpleRightRotation(node, father, grandFather);
     }
 
     @Override

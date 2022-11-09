@@ -15,11 +15,14 @@ public class TestRedBlackTree implements ITest {
         // tree.insert(16);
         // tree.print();
 
-        // insert case 2
-        RedBlackTree tree = new RedBlackTree(15, new GenericComparator());
-        tree.insert(20);
-        tree.insert(10);
-        tree.insert(23);
-        tree.print();
+        // // insert case 2
+        // RedBlackTree tree = new RedBlackTree(15, new GenericComparator());
+        // tree.insert(20);
+        // tree.insert(10);
+        // tree.insert(23);
+        // tree.print();
+
+        // insert c1
+        
     }
 }
