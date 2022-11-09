@@ -9,6 +9,7 @@ import app.utils.InternetTreePrinter;
 import app.utils.NewAvlTreePrinter;
 
 public class AvlTree extends BinarySearchTree {
+    
     public AvlTree(Object root, Comparator<Object> comparator) {
         super(root, comparator);
 
@@ -36,6 +37,9 @@ public class AvlTree extends BinarySearchTree {
         node.setBalanceFactor(node.getBalanceFactor() + (onLeft ? 1 : -1) * (isInsert ? 1 : -1));
 
         if (node.getBalanceFactor() == 2) {
+            System.out.println("--------Before rotation------");
+            this.print();
+            System.out.println("--------Before rotation------");
             AvlTreeNode left = (AvlTreeNode) node.getLeftChild();
             if (left.getBalanceFactor() >= 0) {
                 simpleRightRotation(node);
@@ -46,6 +50,9 @@ public class AvlTree extends BinarySearchTree {
         }
 
         if (node.getBalanceFactor() == -2) {
+            System.out.println("--------Before rotation------");
+            this.print();
+            System.out.println("--------Before rotation------");
             AvlTreeNode right = (AvlTreeNode) node.getRightChild();
             if (right.getBalanceFactor() <= 0) {
                 simpleLeftRotation(node);
@@ -155,20 +162,33 @@ public class AvlTree extends BinarySearchTree {
         AvlTreeNode rebalanceInitNode;
 
         if (isExternal(node.getLeftChild()) && isExternal(node.getRightChild())){
-            node.setObject(null);
-            node.setLeftChild(null);
-            node.setRightChild(null);
-            node.setBalanceFactor(0);
+            AvlTreeNode replaceNode = new AvlTreeNode(null, null);
+            
+            if (removedRoot != null) {
+                if (removedRoot.getLeftChild() == node) {
+                    removedRoot.setLeftChild(replaceNode);
+                }
+                else {
+                    removedRoot.setRightChild(replaceNode);
+                }
+            } else {
+                this.setRoot(replaceNode);
+            }
 
             rebalanceInitNode = (AvlTreeNode) node;
         } else if (isExternal(node.getLeftChild()) && !isExternal(node.getRightChild())){
             AvlTreeNode replaceNode = (AvlTreeNode) node.getRightChild();
             replaceNode.setRootNode(removedRoot);
-            if (removedRoot.getLeftChild() == node) {
-                removedRoot.setLeftChild(replaceNode);
-            }
-            else {
-                removedRoot.setRightChild(removedRoot);
+
+            if (removedRoot != null) {
+                if (removedRoot.getLeftChild() == node) {
+                    removedRoot.setLeftChild(replaceNode);
+                }
+                else {
+                    removedRoot.setRightChild(replaceNode);
+                }
+            } else {
+                this.setRoot(replaceNode);
             }
 
             rebalanceInitNode = (AvlTreeNode) replaceNode;
@@ -176,10 +196,14 @@ public class AvlTree extends BinarySearchTree {
             AvlTreeNode replaceNode = (AvlTreeNode) node.getLeftChild();
             replaceNode.setRootNode(removedRoot);
             
-            if (removedRoot.getLeftChild() == node) {
-                removedRoot.setLeftChild(replaceNode);
+            if (removedRoot != null) {
+                if (removedRoot.getLeftChild() == node) {
+                    removedRoot.setLeftChild(replaceNode);
+                } else {
+                    removedRoot.setRightChild(replaceNode);
+                }
             } else {
-                removedRoot.setRightChild(replaceNode);
+                this.setRoot(replaceNode);
             }
 
             rebalanceInitNode = (AvlTreeNode) replaceNode;
@@ -194,19 +218,28 @@ public class AvlTree extends BinarySearchTree {
 
             node.setObject(replaceNode.getObject());
             replaceNode.setObject(null);
-
-            if (replaceNode.getRightChild().getObject() != null)
+            if (replaceNode == node.getRightChild()){
+                node.setRightChild(replaceNode.getRightChild());
+            } else if (replaceNode.getRightChild().getObject() != null) {
                 replaceNode.getRootNode().setLeftChild(replaceNode.getRightChild());
+            }
                      
             replaceNode.setRightChild(null);
             replaceNode.setLeftChild(null);
+            replaceNode.setBalanceFactor(0);
         }
 
+        AvlTreeNode rr = (AvlTreeNode) rebalanceInitNode.getRootNode();
+        if (rr != null){
+            System.out.println("Reabalance init on: "+ rebalanceInitNode.getRootNode().getObject());
+        } else {
+            System.out.println("Root, no rebalance");
+        }
         this.updateBalanceFactor(rebalanceInitNode, false);
     }
 
     @Override
     public void print() {
-        AvlTreePrinter.print(this);
+        InternetTreePrinter.print(this);
     }
 }
