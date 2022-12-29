@@ -154,7 +154,7 @@ public class BinarySearchTree {
 
     private BinaryTreeNode searchRec(Object key, BinaryTreeNode node)
     {
-        if (this.isExternal(node) || this.comparator.compare(key, node.getObject()) == IS_EQUAL)
+        if (node == null || this.isExternal(node) || this.comparator.compare(key, node.getObject()) == IS_EQUAL)
             return node;
         
         else if (this.comparator.compare(key, node.getObject()) == IS_SMALLER)
@@ -181,6 +181,12 @@ public class BinarySearchTree {
         BinaryTreeNode node = this.search(key);
         if (node.getObject() == null)
             throw new IllegalArgumentException("Elemento nao existe");
+
+        BinaryTreeNode removedRoot = node.getRootNode();
+        if (removedRoot == null) {
+            this.setRoot(null);
+        }
+        boolean isLeft = removedRoot.getRightChild() == node;
        
         // se for externo
         if (isExternal(node.getLeftChild()) && isExternal(node.getRightChild())){

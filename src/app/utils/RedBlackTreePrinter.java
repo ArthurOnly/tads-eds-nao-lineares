@@ -6,6 +6,9 @@ import app.structures.RedBlackTree;
 import app.structures.utils.RedBlackTreeNode;
 
 public class RedBlackTreePrinter {
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    
     public static void print(RedBlackTree tree) {
         LinkedList<RedBlackTreeNode> treeLevel = new LinkedList<RedBlackTreeNode>();
         LinkedList<RedBlackTreeNode> temp = new LinkedList<RedBlackTreeNode>();
@@ -45,7 +48,7 @@ public class RedBlackTreePrinter {
     }
 
     public static void printElement(double n, RedBlackTreeNode removed) {
-        for (; n > 0; n--) {
+        for (; n/2 > 0; n--) {
             System.out.print(" ");
         }
         if (removed == null) {
@@ -55,7 +58,7 @@ public class RedBlackTreePrinter {
                 RedBlackTreeNode root = (RedBlackTreeNode) removed.getRootNode();
                 Object pai = root != null ? root.getObject() : null;
                 String color = removed.isBlack() ? "b" : "r";
-                System.out.print(removed.getObject()+":"+color);
+                System.out.print((removed.isBlack() ? ANSI_BLACK : ANSI_RED)+ removed.getObject()+":"+color);
                 //System.out.print(removed.getObject()+":"+removed.getBalanceFactor());
                 //System.out.print(removed.getObject()+":"+removed.getBalanceFactor()+";L:"+removed.getLeftChild().getObject()+";R:"+removed.getRightChild().getObject());
             }

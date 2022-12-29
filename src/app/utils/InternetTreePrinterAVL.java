@@ -3,7 +3,7 @@ package app.utils;
 import app.structures.AvlTree;
 import app.structures.utils.AvlTreeNode;
 
-public class InternetTreePrinter {
+public class InternetTreePrinterAVL {
     static final int COUNT = 24;
 
     public static void print(AvlTree tree) {
@@ -15,13 +15,13 @@ public class InternetTreePrinter {
         // Base case
         if (root == null)
             return;
- 
+
         // Increase distance between levels
         space += COUNT;
- 
+
         // Process right child first
         printR((AvlTreeNode) root.getRightChild(), space, tree);
- 
+
         // Print current node after space
         // count
         AvlTreeNode rootz = (AvlTreeNode) root.getRootNode();
@@ -34,12 +34,13 @@ public class InternetTreePrinter {
         Object right = rightz != null ? rightz.getObject() : null;
 
         String isRoot = root == (AvlTreeNode) tree.getRoot() ? "****" : "";
-        
+
         System.out.print("\n");
         for (int i = COUNT; i < space; i++)
             System.out.print(" ");
-        System.out.print(isRoot+root.getObject()+":"+root.getBalanceFactor()+";RO:"+pai+";L:"+left+";R:"+right);
- 
+        System.out.print(isRoot + root.getObject() + ":" + root.getBalanceFactor() + ";RO:" + pai + ";L:" + left + ";R:"
+                + right);
+
         // Process left child
         printR((AvlTreeNode) root.getLeftChild(), space, tree);
     }

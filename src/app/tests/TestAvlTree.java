@@ -132,17 +132,17 @@ public class TestAvlTree implements ITest {
         // }
         // }
 
-        // test error case 3
-        AvlTree tree2 = new AvlTree(8, new GenericComparator());
-        tree2.insert(6);
-        tree2.insert(31);
-        tree2.insert(3);
-        tree2.insert(32);
-        tree2.insert(15);
-        tree2.insert(14);
-        tree2.print();
-        tree2.remove(6);
-        tree2.print();
+        // // test error case 3
+        // AvlTree tree2 = new AvlTree(8, new GenericComparator());
+        // tree2.insert(6);
+        // tree2.insert(31);
+        // tree2.insert(3);
+        // tree2.insert(32);
+        // tree2.insert(15);
+        // tree2.insert(14);
+        // tree2.print();
+        // tree2.remove(6);
+        // tree2.print();
 
         // // test error case 2
         // AvlTree tree2 = new AvlTree(31, new GenericComparator());
