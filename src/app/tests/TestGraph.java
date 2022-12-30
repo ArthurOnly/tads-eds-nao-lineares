@@ -14,6 +14,6 @@ public class TestGraph implements ITest {
         graph.addVertex(0,2, 2);
         graph.addVertex(2,2, 20);
         graph.print();
-        System.out.println(graph.connections().size());
+        //System.out.println(graph.connections().size());
     }
 }
