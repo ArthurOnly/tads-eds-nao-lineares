@@ -16,13 +16,14 @@ public class GraphAdjacencePrinter implements IGraphPrinter {
             System.out.println("Grafo vazio");
             return;
         }
-        int index = 0;
+        System.out.print(String.format("%10s", ""));
         for (Edge edge : graph.getEdges()) {
-            System.out.print(String.format("%10s", "v"+index+":"+edge.getCost()));
-            index++;
+            System.out.print(String.format("%10s", edge.getLabel()+":"+edge.getCost()));
         }
         System.out.println();
-        for (Vector<Vector<Vertex>> column : graph.getAdjacencies()) {
+        for (int i = 0; i < graph.getAdjacencies().size(); i++) {
+            Vector<Vector<Vertex>> column = graph.getAdjacencies().get(i);
+            System.out.print(String.format("%10s", graph.getEdges().get(i).getLabel()));
             for (Vector<Vertex> line : column) {
                 String lineString = "";
                 lineString += "[";

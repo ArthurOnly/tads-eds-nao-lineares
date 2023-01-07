@@ -17,29 +17,80 @@ public class Graph {
         this.adjacencies = new Vector<Vector<Vector<Vertex>>>();
     }
 
-    public void addEdge(Edge edge) {
+    public Edge addEdge(Edge edge) {
         this.edges.add(edge);
 
         Vector<Vector<Vertex>> line = new Vector<Vector<Vertex>>();
         this.adjacencies.add(line);
         this.updateColumnsSize();
+
+        return edge;
     }
 
-    public void addEdge(float edgeCost) {
-        Edge newEdge = new Edge(edgeCost);
-        this.addEdge(newEdge);
+    public Edge addEdge(float edgeCost, String edgeLabel) {
+        Edge newEdge = new Edge(edgeCost, edgeLabel);
+        return this.addEdge(newEdge);
     }
 
     public Vector<Edge> getEdges() {
         return this.edges;
     }
 
-    public void addVertex(int x, int y, float vertexCost) {
-        Vertex vertex = new Vertex(vertexCost);
+    public void removeEdge(Edge edge) throws IllegalArgumentException {
+        int edgePosition = this.edges.indexOf(edge);
+        if (edgePosition == -1) {
+            throw new IllegalArgumentException("Aresta não encontrada");
+        }
+        this.edges.remove(edgePosition);
+        this.adjacencies.remove(edgePosition);
+        for (Vector<Vector<Vertex>> line : this.adjacencies) {
+            line.remove(edgePosition);
+        }
+    }
+
+    public Vertex addVertex(Edge from, Edge to, Vertex vertex) {
+        int x = this.edges.indexOf(from);
+        int y = this.edges.indexOf(to);
         this.adjacencies.get(x).get(y).add(vertex);
         if (x != y) {
             this.adjacencies.get(y).get(x).add(vertex);
         }
+        return vertex;
+    }
+
+    public Vertex addVertex(int from, int to, float vertexCost) {
+        Vertex newVertex = new Vertex(vertexCost);
+        return this.addVertex(this.edges.get(from), this.edges.get(to), newVertex);
+    } 
+
+    public void removeVertex(Edge from, Edge to, Vertex vertex) throws IllegalArgumentException {
+        int x = this.edges.indexOf(from);
+        int y = this.edges.indexOf(to);
+        boolean removed = this.adjacencies.get(x).get(y).remove(vertex);
+        if (!removed) {
+            throw new IllegalArgumentException("Vertice não encontrado");
+        }
+        if (x != y) {
+            this.adjacencies.get(y).get(x).remove(vertex);
+        }
+    }
+
+    public void removeVertex(int from, int to, Vertex vertex) {
+        this.removeVertex(this.edges.get(from), this.edges.get(to), vertex);
+    }
+
+    public Vector<Vertex> getVertexOfEdge(Edge edge) {
+        int edgePosition = this.edges.indexOf(edge);
+        if (edgePosition == -1) {
+            throw new IllegalArgumentException("Aresta não encontrada");
+        }
+        Vector<Vertex> result = new Vector<Vertex>();
+        for (Vector<Vector<Vertex>> line : this.adjacencies) {
+            for (Vertex vertex : line.get(edgePosition)) {
+                result.add(vertex);
+            }
+        }
+        return result;
     }
 
     private void updateColumnsSize() {
@@ -51,9 +102,13 @@ public class Graph {
         }
     }
 
-    public Vector<Vertex> endsInEdge(int edge) {
+    public Vector<Vertex> endsInEdge(Edge edge) throws IllegalArgumentException {
+        int edgePosition = this.edges.indexOf(edge);
+        if (edgePosition == -1) {
+            throw new IllegalArgumentException("Aresta não encontrada");
+        }
         Vector<Vertex> result = new Vector<Vertex>();
-        for (Vector<Vertex> column : this.adjacencies.get(edge)) {
+        for (Vector<Vertex> column : this.adjacencies.get(edgePosition)) {
             for (Vertex vertex : column) {
                 result.add(vertex);
             }
@@ -61,12 +116,36 @@ public class Graph {
         return result;
     }
 
-    public boolean isAdjacent(int edgeOne, int edgeTwo) {
+    public boolean areAdjacent(Edge edgeOne, Edge edgeTwo) throws IllegalArgumentException {
+        int edgeOnePosition = this.edges.indexOf(edgeOne);
+        int edgeTwoPosition = this.edges.indexOf(edgeTwo);
+        if (edgeOnePosition == -1 || edgeTwoPosition == -1) {
+            throw new IllegalArgumentException("Aresta não encontrada");
+        }
         boolean result = false;
         for (Vertex vertex : this.endsInEdge(edgeOne)) {
             if (this.endsInEdge(edgeTwo).contains(vertex)) {
                 result = true;
                 break;
+            }
+        }
+        return result;
+    }
+
+    public Edge getOposite(Edge edge, Vertex vertex) throws IllegalArgumentException {
+        int edgePosition = this.edges.indexOf(edge);
+        if (edgePosition == -1) {
+            throw new IllegalArgumentException("Aresta não encontrada");
+        }
+        Edge result = null;
+        for (int i = 0; i < this.adjacencies.size(); i++) {
+            if (i != edgePosition) {
+                for (Vertex v : this.adjacencies.get(i).get(edgePosition)) {
+                    if (v.equals(vertex)) {
+                        result = this.edges.get(i);
+                        break;
+                    }
+                }
             }
         }
         return result;
@@ -120,6 +199,87 @@ public class Graph {
         }
         return result;
     } 
+
+    public boolean isComplete(){
+        boolean result = true;
+        for (Vector<Vector<Vertex>> line : this.adjacencies) {
+            for (Vector<Vertex> column : line) {
+                int indexOfLine = this.adjacencies.indexOf(line);
+                int indexOfColumn = line.indexOf(column);
+                if (column.size() == 0 && indexOfLine != indexOfColumn) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    // se é conexo
+    public boolean isConnected(){
+        boolean result = true;
+        for (Vector<Vector<Vertex>> line : this.adjacencies) {
+            for (Vector<Vertex> column : line) {
+                if (column.size() == 0) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    // se é euleriano
+    public boolean isEulerian(){
+        boolean result = true;
+        for (int i = 0; i < this.edges.size(); i++) {
+            if (this.degree(i) % 2 != 0) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+
+    // se tem um caminho euleriano
+    public boolean hasEulerianPath(){
+        int odd = 0;
+        for (int i = 0; i < this.edges.size(); i++) {
+            if (this.degree(i) % 2 != 0) {
+                odd++;
+            }
+            if (odd > 2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // GET EULERIAN PATH fleury
+    public Vector<Edge> getEulerianPath(){
+        if (!this.hasEulerianPath()) {
+            return null;
+        }
+
+        Vector<Edge> result = new Vector<Edge>();
+        Vector<Edge> edges = new Vector<Edge>(this.edges);
+        Vector<Vector<Vector<Vertex>>> adjacencies = new Vector<Vector<Vector<Vertex>>>(this.adjacencies);
+        
+        // como descobrir se está desconexo
+    }
+
+    public boolean isBridge(Vertex vertex) {
+        boolean result = false;
+        for (int i = 0; i < this.edges.size(); i++) {
+            if (this.degree(i) == 1) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+
 
     public void print() {
         this.printer.print(this);
