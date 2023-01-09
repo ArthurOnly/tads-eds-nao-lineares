@@ -4,8 +4,8 @@ import java.util.Vector;
 
 import app.interfaces.IGraphPrinter;
 import app.structures.Graph;
-import app.structures.utils.Edge;
 import app.structures.utils.Vertex;
+import app.structures.utils.Edge;
 
 public class GraphAdjacencePrinter implements IGraphPrinter {
     public GraphAdjacencePrinter() {
@@ -17,17 +17,17 @@ public class GraphAdjacencePrinter implements IGraphPrinter {
             return;
         }
         System.out.print(String.format("%10s", ""));
-        for (Edge edge : graph.getEdges()) {
+        for (Vertex edge : graph.getVertexs()) {
             System.out.print(String.format("%10s", edge.getLabel()+":"+edge.getCost()));
         }
         System.out.println();
         for (int i = 0; i < graph.getAdjacencies().size(); i++) {
-            Vector<Vector<Vertex>> column = graph.getAdjacencies().get(i);
-            System.out.print(String.format("%10s", graph.getEdges().get(i).getLabel()));
-            for (Vector<Vertex> line : column) {
+            Vector<Vector<Edge>> column = graph.getAdjacencies().get(i);
+            System.out.print(String.format("%10s", graph.getVertexs().get(i).getLabel()));
+            for (Vector<Edge> line : column) {
                 String lineString = "";
                 lineString += "[";
-                for (Vertex vertex : line) {
+                for (Edge vertex : line) {
                     lineString += vertex.getCost() + ",";
                 }
                 lineString += "]";

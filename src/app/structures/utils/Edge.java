@@ -2,11 +2,9 @@ package app.structures.utils;
 
 public class Edge {
     private float cost;
-    private String label;
     
-    public Edge(float cost, String label) {
+    public Edge(float cost) {
         this.cost = cost;
-        this.label = label;
     }
 
     public float getCost(){
@@ -15,13 +13,5 @@ public class Edge {
 
     public void setCost(float cost){
         this.cost = cost;
-    }
-
-    public String getLabel(){
-        return this.label;
-    }
-
-    public void setLabel(String label){
-        this.label = label;
     }
 }
