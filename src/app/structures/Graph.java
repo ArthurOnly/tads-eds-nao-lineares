@@ -17,6 +17,12 @@ public class Graph {
         this.adjacencies = new Vector<Vector<Vector<Edge>>>();
     }
 
+    public Graph(Graph graph) {
+        this.adjacencies = graph.getAdjacencies();
+        this.vertexs = graph.getVertexs();
+        this.printer = graph.getPrinter();
+    }
+
     public Vertex addVertex(Vertex vertex) {
         this.vertexs.add(vertex);
 
@@ -43,11 +49,11 @@ public class Graph {
         }
     }
 
-    public Edge addEdge(Vertex from, Vertex to, Edge edge) {
+    public Edge addEdge(Vertex from, Vertex to, Edge edge, boolean isDirect) {
         int x = this.vertexs.indexOf(from);
         int y = this.vertexs.indexOf(to);
         this.adjacencies.get(x).get(y).add(edge);
-        if (x != y) {
+        if (!isDirect && x != y) {
             this.adjacencies.get(y).get(x).add(edge);
         }
         return edge;
@@ -65,7 +71,23 @@ public class Graph {
         }
     }
 
-    public Vector<Edge> getEdgesOfVertex(Vertex vertex) {
+    public Vector<Vertex> finalsVertex(Edge edge) {
+        Vector<Vertex> v = new Vector<Vertex>();
+        for (int x = 0; x < this.vertexs.size(); x++) {
+            for (int y = 0; y < this.vertexs.size(); y++) {
+                for (Edge cedge : this.adjacencies.get(x).get(y)) {
+                    if (edge == cedge) {
+                        v.add(this.vertexs.get(x));
+                        v.add(this.vertexs.get(y));
+                        return v;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public Vector<Edge> getIncidenceOfVertex(Vertex vertex) {
         int vertexPosition = this.vertexs.indexOf(vertex);
         if (vertexPosition == -1) {
             throw new IllegalArgumentException("Vertice não encontrado");
@@ -88,14 +110,28 @@ public class Graph {
         }
     }
 
-    public boolean areAdjacent(Vertex edgeOne, Vertex edgeTwo) throws IllegalArgumentException {
-        int edgeOnePosition = this.vertexs.indexOf(edgeOne);
-        int edgeTwoPosition = this.vertexs.indexOf(edgeTwo);
-        if (edgeOnePosition == -1 || edgeTwoPosition == -1) {
-            throw new IllegalArgumentException("Aresta não encontrada");
+    public boolean areAdjacent(Vertex vertexOne, Vertex vertexTwo) throws IllegalArgumentException {
+        int vertexOnePosition = this.vertexs.indexOf(vertexOne);
+        int vertexTwoPosition = this.vertexs.indexOf(vertexTwo);
+        if (vertexOnePosition == -1 || vertexTwoPosition == -1) {
+            throw new IllegalArgumentException("Vértice não encontrada");
         }
-        
-        return this.adjacencies.get(edgeOnePosition).get(edgeTwoPosition).size() > 0;
+
+        return this.adjacencies.get(vertexOnePosition).get(vertexTwoPosition).size() > 0;
+    }
+
+    public Vector<Vertex> getAdjacencies(Vertex vertex) {
+        Vector<Vertex> result = new Vector<Vertex>();
+
+        for (int i = 0; i < this.vertexs.size(); i++) {
+            Vertex vertexTwo = this.vertexs.get(i);
+            if (vertex == vertexTwo)
+                continue;
+            if (this.areAdjacent(vertex, vertexTwo))
+                result.add(vertexTwo);
+        }
+
+        return result;
     }
 
     public Vertex getOposite(Vertex vertex, Edge edge) throws IllegalArgumentException {
@@ -117,20 +153,33 @@ public class Graph {
         return result;
     }
 
+    public boolean isDirected(Edge edge) throws IllegalArgumentException {
+        for (int x = 0; x < this.vertexs.size(); x++) {
+            for (int y = 0; y < this.vertexs.size(); y++) {
+                for (Edge cedge : this.adjacencies.get(x).get(y)) {
+                    if (edge == cedge) {
+                        return !this.adjacencies.get(y).get(x).contains(edge);
+                    }
+                }
+            }
+        }
+        throw new IllegalArgumentException("Aresta não encontrada");
+    }
+
     // my methods
-    public int getOrder(){
+    public int getOrder() {
         return this.vertexs.size();
-    } 
+    }
 
     public int degree(int edge) {
         int result = 0;
-        for (Vector<Edge> column : this.adjacencies.get(edge)){
+        for (Vector<Edge> column : this.adjacencies.get(edge)) {
             result += column.size();
         }
         return result;
     }
 
-    public boolean isRegular(){
+    public boolean isRegular() {
         boolean result = true;
         int degree = this.degree(0);
         for (int i = 1; i < this.vertexs.size(); i++) {
@@ -142,7 +191,7 @@ public class Graph {
         return result;
     }
 
-    public boolean isMultigraph(){
+    public boolean isMultigraph() {
         boolean result = false;
         for (Vector<Vector<Edge>> line : this.adjacencies) {
             for (Vector<Edge> column : line) {
@@ -153,9 +202,9 @@ public class Graph {
             }
         }
         return result;
-    } 
+    }
 
-    public boolean isComplete(){
+    public boolean isComplete() {
         boolean result = true;
         for (Vector<Vector<Edge>> line : this.adjacencies) {
             for (Vector<Edge> column : line) {
@@ -171,34 +220,32 @@ public class Graph {
     }
 
     // se é conexo
-    public boolean isConnected(){
-        Vector<Vertex> initial = this.vertexs;
+    public boolean isConnected() {
+        Graph graph = new Graph(this);
         int parts = 0;
 
-        while (initial.size() > 0) {
-            parts++;
-            Vector<Vertex> visited = new Vector<Vertex>();
-            Vector<Vertex> toVisit = new Vector<Vertex>();
-            toVisit.add(initial.get(0));
-            while (toVisit.size() > 0) {
-                Vertex vertex = toVisit.get(0);
-                toVisit.remove(0);
-                visited.add(vertex);
-                for (Edge edge : this.getEdgesOfVertex(vertex)) {
-                    Vertex oposite = this.getOposite(vertex, edge);
-                    if (!visited.contains(oposite) && !toVisit.contains(oposite)) {
-                        toVisit.add(oposite);
-                    }
-                }
+        while (graph.getVertexs().size() > 1) {
+            Vertex v0 = graph.getVertexs().get(0);
+            while (this.getAdjacencies(v0).size() > 0) {
+                v0 = graph.fuse(v0, this.getAdjacencies(v0).get(0));
             }
-            initial.removeAll(visited);
+            parts += 1;
         }
 
         return parts <= 1;
     }
 
+    public Vertex fuse(Vertex vOne, Vertex vTwo) {
+        int indexOfVone = this.vertexs.indexOf(vOne);
+        int indexOfVtwo = this.vertexs.indexOf(vTwo);
+        for (int i = 0; i < this.vertexs.size(); i++) {
+            // this.adjacencies.get(vOne).get(i).add(this.adjacencies.get(vTwo).get(i));
+        }
+        return null;
+    }
+
     // se é euleriano
-    public boolean isEulerian(){
+    public boolean isEulerian() {
         boolean result = true;
         for (int i = 0; i < this.vertexs.size(); i++) {
             if (this.degree(i) % 2 != 0) {
@@ -210,7 +257,7 @@ public class Graph {
     }
 
     // se tem um caminho euleriano
-    public boolean hasEulerianPath(){
+    public boolean hasEulerianPath() {
         int odd = 0;
         for (int i = 0; i < this.vertexs.size(); i++) {
             if (this.degree(i) % 2 != 0) {
@@ -224,7 +271,7 @@ public class Graph {
     }
 
     // GET EULERIAN PATH fleury
-    public Vector<Vertex> getEulerianPath(){
+    public Vector<Vertex> getEulerianPath() {
         if (!this.hasEulerianPath()) {
             return null;
         }
@@ -232,7 +279,7 @@ public class Graph {
         Vector<Vertex> result = new Vector<Vertex>();
         Vector<Vertex> edges = new Vector<Vertex>(this.vertexs);
         Vector<Vector<Vector<Edge>>> adjacencies = new Vector<Vector<Vector<Edge>>>(this.adjacencies);
-        
+
         // como descobrir se está desconexo
         return result;
     }
@@ -248,13 +295,15 @@ public class Graph {
         return result;
     }
 
-
-
     public void print() {
         this.printer.print(this);
     }
 
     public Vector<Vector<Vector<Edge>>> getAdjacencies() {
         return this.adjacencies;
+    }
+
+    public IGraphPrinter getPrinter() {
+        return this.printer;
     }
 }
