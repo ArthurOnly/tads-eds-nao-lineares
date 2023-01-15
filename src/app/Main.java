@@ -12,7 +12,7 @@ public class Main {
         //TestBinarySearchTree.run();
         //TestAvlTree.run();
         //TestRedBlackTree.run();
-        TestGraph.run();
-        //TestFindPath.run();
+        //TestGraph.run();
+        TestFindPath.run();
     }
 }

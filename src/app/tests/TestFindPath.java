@@ -1,26 +1,32 @@
 package app.tests;
 
+import java.util.List;
 import java.util.Vector;
 
 import app.interfaces.ITest;
+import app.utils.Djikstra;
 
 public class TestFindPath implements ITest {
-    public static String ENTRY = "2";
-    public static String EXIT = "3";
-    public static String WALL = "1";
-    public static String PATH = "0";
 
     public static void run() {
-
-    }
-
-    public Vector<Vector<Integer>> findPath(Vector<Vector<Integer>> graph, int x, int y) {
-        Vector<Vector<Integer>> path = new Vector<Vector<Integer>>();
-        Vector<Integer> visited = new Vector<Integer>();
-        while (true) {
-            // stop condition
-
+        int rows = 6;
+        int cols = 6;
+        int[][] maze = {
+            {1,1,1,1,1,1},
+            {1,0,0,0,0,1},
+            {1,0,1,1,0,1},
+            {1,0,1,1,0,1},
+            {1,0,0,0,0,1},
+            {1,1,1,3,1,1}
+        };
+        Djikstra.Result result = Djikstra.dijkstra(maze, 6, 6, 1, 2);
+        //p= printe o caminho
+        System.out.println("Path: ");
+        for (int i = 0; i < result.path.size(); i++) {
+            System.out.println(result.path.get(i).first + " " + result.path.get(i).second);
         }
+        System.out.println("Distance: " + result.distance);
+
     }
 
 }
