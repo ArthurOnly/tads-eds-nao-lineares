@@ -19,11 +19,6 @@ public class Djikstra {
         }
     }
 
-    public static class Result {
-        public int distance;
-        public List<Pair<Integer, Integer>> path;
-    }
-
     static class Node {
         int x;
         int y;
@@ -35,72 +30,153 @@ public class Djikstra {
             this.dist = dist;
         }
     }
-    
-    public static Result dijkstra(int mat[][], int ROW, int COL, int srcX, int srcY) {
-        List<Node> exits = new ArrayList<>();
+
+    public static List<Pair<Integer, Integer>> dijkstra(int[][] maze, int srcX, int srcY) {
+        int ROW = maze.length;
+        int COL = maze[0].length;
+        int[] rowNum = { -1, 0, 0, 1 };
+        int[] colNum = { 0, -1, 1, 0 };
+
+        // Matriz de distancia
+        int[][] dist = new int[ROW][COL];
+        for (int[] row : dist) {
+            Arrays.fill(row, Integer.MAX_VALUE);
+        }
+        dist[srcX][srcY] = 0;
+
+        // Matriz de caminho e saidas
+        List<Pair<Integer, Integer>> exits = new ArrayList<>();
+        List<Pair<Integer, Integer>>[][] path = new ArrayList[ROW][COL];
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
-                if (mat[i][j] == 3) {
-                    exits.add(new Node(i, j, 0));
+                path[i][j] = new ArrayList<>();
+                if (maze[i][j] == 3) {
+                    exits.add(new Pair<>(i, j));
                 }
             }
         }
+        path[srcX][srcY].add(new Pair<>(srcX, srcY));
 
-        Result result = new Result();
-        result.distance = Integer.MAX_VALUE;
-        result.path = new ArrayList<>();
+        // Matriz de visitados
+        boolean[][] visited = new boolean[ROW][COL];
 
         PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.dist - b.dist);
-
-        boolean[][] visited = new boolean[ROW][COL];
-        int[][] dist = new int[ROW][COL];
-        List<Pair<Integer, Integer>> path[][] = new ArrayList[ROW][COL];
-
-        for (int i = 0; i < ROW; i++) {
-            for (int j = 0; j < COL; j++) {
-                dist[i][j] = Integer.MAX_VALUE;
-                path[i][j] = new ArrayList<>();
-            }
-        }
-    
-        int rowNum[] = {-1, 0, 0, 1};
-        int colNum[] = {0, -1, 1, 0};
-    
         pq.add(new Node(srcX, srcY, 0));
-        dist[srcX][srcY] = 0;
-        path[srcX][srcY].add(new Pair<>(srcX, srcY));
-    
+
         while (!pq.isEmpty()) {
-            Node node = pq.poll();
-    
-            int i = node.x;
-            int j = node.y;
-            visited[i][j] = true;
-    
+            Node curr = pq.poll();
+
+            if (visited[curr.x][curr.y]) {
+                continue;
+            }
+
+            visited[curr.x][curr.y] = true;
+
+            // Está processando uma saída
+            if (maze[curr.x][curr.y] == 3) {
+                return path[curr.x][curr.y];
+            }
+
             for (int k = 0; k < 4; k++) {
-                if (isSafe(mat, i + rowNum[k], j + colNum[k], ROW, COL) && !visited[i + rowNum[k]][j + colNum[k]]) {
-                    int newDist = dist[i][j] + 1;
-                    if (newDist < dist[i + rowNum[k]][j + colNum[k]]) {
-                        dist[i + rowNum[k]][j + colNum[k]] = newDist;
-                        pq.add(new Node(i + rowNum[k], j + colNum[k], newDist));
-                        path[i + rowNum[k]][j + colNum[k]] = new ArrayList<>(path[i][j]);
-                        path[i + rowNum[k]][j + colNum[k]].add(new Pair<>(i + rowNum[k], j + colNum[k]));
+                int i = curr.x + rowNum[k];
+                int j = curr.y + colNum[k];
+
+                // Se o vizinho é seguro e a distância é menor do que a anterior, atualiza
+                if (isSafe(maze, i, j, visited)) {
+                    int newDist = dist[curr.x][curr.y] + 1;
+                    if (newDist < dist[i][j]) {
+                        dist[i][j] = newDist;
+                        pq.add(new Node(i, j, newDist));
+                        path[i][j] = new ArrayList<>(path[curr.x][curr.y]);
+                        path[i][j].add(new Pair<>(i, j));
                     }
                 }
             }
         }
-    
-        for (Node exit : exits) {
-            if (dist[exit.x][exit.y] < result.distance) {
-                result.distance = dist[exit.x][exit.y];
-                result.path = path[exit.x][exit.y];
+
+        return new ArrayList<>();
+    }
+
+    public static List<Pair<Integer, Integer>> AStar(int[][] maze, int srcX, int srcY) {
+        int ROW = maze.length;
+        int COL = maze[0].length;
+        int[] rowNum = { -1, 0, 0, 1 };
+        int[] colNum = { 0, -1, 1, 0 };
+
+        // Inicializa as estruturas de dados
+        int[][] dist = new int[ROW][COL];
+        for (int[] row : dist) {
+            Arrays.fill(row, Integer.MAX_VALUE);
+        }
+        dist[srcX][srcY] = 0;
+
+        List<Pair<Integer, Integer>>[][] path = new ArrayList[ROW][COL];
+        List<Pair<Integer, Integer>> exits = new ArrayList<>();
+        for (int i = 0; i < ROW; i++) {
+            for (int j = 0; j < COL; j++) {
+                path[i][j] = new ArrayList<>();
+                if (maze[i][j] == 3) {
+                    exits.add(new Pair<>(i, j));
+                }
             }
         }
-        return result;
+        path[srcX][srcY].add(new Pair<>(srcX, srcY));
+
+        boolean[][] visited = new boolean[ROW][COL];
+
+        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> (a.dist + heuristic(a, exits)) - (b.dist + heuristic(b, exits)));
+        pq.add(new Node(srcX, srcY, 0));
+
+        // Enquanto a fila de prioridade não estiver vazia
+        while (!pq.isEmpty()) {
+            // Pega o nó com menor distância
+            Node curr = pq.poll();
+
+            // Se o nó atual já foi visitado, continua
+            if (visited[curr.x][curr.y]) {
+                continue;
+            }
+
+            // Marca o nó atual como visitado
+            visited[curr.x][curr.y] = true;
+
+            // Está processando uma saída
+            if (maze[curr.x][curr.y] == 3) {
+                return path[curr.x][curr.y];
+            }
+
+            // Verifica os vizinhos do nó atual
+            for (int k = 0; k < 4; k++) {
+                int i = curr.x + rowNum[k];
+                int j = curr.y + colNum[k];
+
+                // Se o vizinho é seguro e a distância é menor do que a anterior, atualiza
+                if (isSafe(maze, i, j, visited)) {
+                    int newDist = dist[curr.x][curr.y] + 1;
+                    if (newDist < dist[i][j]) {
+                        dist[i][j] = newDist;
+                        pq.add(new Node(i, j, newDist));
+                        path[i][j] = new ArrayList<>(path[curr.x][curr.y]);
+                        path[i][j].add(new Pair<>(i, j));
+                    }
+                }
+            }
+        }
+
+        return new ArrayList<>();
     }
-    
-    static boolean isSafe(int mat[][], int x, int y, int ROW, int COL) {
-        return (x >= 0 && x < ROW && y >= 0 && y < COL && mat[x][y] != 1);
+
+    public static int heuristic(Node curr, List<Pair<Integer, Integer>> exits) {
+        int minDist = Integer.MAX_VALUE;
+        for (Pair<Integer, Integer> exit : exits) {
+            int dist = (int) Math.sqrt(Math.pow(curr.x - exit.first, 2) + Math.pow(curr.y - exit.second, 2));
+            minDist = Math.min(minDist, dist);
+        }
+        return minDist;
     }
-    
+
+    private static boolean isSafe(int[][] maze, int i, int j, boolean[][] visited) {
+        return i >= 0 && i < maze.length && j >= 0 && j < maze[0].length && maze[i][j] != 1 && !visited[i][j];
+    }
+
 }
