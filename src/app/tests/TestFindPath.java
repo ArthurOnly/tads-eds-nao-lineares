@@ -11,12 +11,10 @@ import app.utils.Djikstra;
 public class TestFindPath implements ITest {
 
     public static void run() {
-        // Lê o arquivo
         try {
             File file = new File("src/app/assets/maze.dat");
             Scanner sc = new Scanner(file);
 
-            // Inicializa a lista para armazenar as linhas do arquivo
             List<String> lines = new ArrayList<>();
             while (sc.hasNextLine()) {
                 lines.add(sc.nextLine());
@@ -26,10 +24,8 @@ public class TestFindPath implements ITest {
             int rows = lines.size();
             int cols = lines.get(0).length();
 
-            // Inicializa a matriz
             int[][] maze = new int[rows][cols];
 
-            // Preenche a matriz com os valores do arquivo
             for (int i = 0; i < rows; i++) {
                 String line = lines.get(i);
                 for (int j = 0; j < cols; j++) {
