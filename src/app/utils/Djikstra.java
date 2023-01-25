@@ -3,9 +3,7 @@ package app.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Vector;
 import java.util.*;
-import app.utils.Pair;
 
 public class Djikstra {
 
@@ -37,25 +35,23 @@ public class Djikstra {
         int[] rowNum = { -1, 0, 0, 1 };
         int[] colNum = { 0, -1, 1, 0 };
 
-        // Matriz de distancia
-        int[][] dist = new int[ROW][COL];
-        for (int[] row : dist) {
-            Arrays.fill(row, Integer.MAX_VALUE);
-        }
-        dist[srcX][srcY] = 0;
+        long start = System.currentTimeMillis();
 
-        // Matriz de caminho e saidas
+        // Matriz de caminho, saidas e distancia
+        int[][] dist = new int[ROW][COL];
         List<Pair<Integer, Integer>> exits = new ArrayList<>();
         List<Pair<Integer, Integer>>[][] path = new ArrayList[ROW][COL];
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
+                dist[i][j] = Integer.MAX_VALUE;
                 path[i][j] = new ArrayList<>();
                 if (maze[i][j] == 3) {
                     exits.add(new Pair<>(i, j));
                 }
             }
         }
-        path[srcX][srcY].add(new Pair<>(srcX, srcY));
+        path[srcX][srcY].add(new Pair<>(srcX, srcY)); // caminho inicial
+        dist[srcX][srcY] = 0; // distancia inicial
 
         // Matriz de visitados
         boolean[][] visited = new boolean[ROW][COL];
@@ -103,17 +99,12 @@ public class Djikstra {
         int[] rowNum = { -1, 0, 0, 1 };
         int[] colNum = { 0, -1, 1, 0 };
 
-        // Inicializa as estruturas de dados
         int[][] dist = new int[ROW][COL];
-        for (int[] row : dist) {
-            Arrays.fill(row, Integer.MAX_VALUE);
-        }
-        dist[srcX][srcY] = 0;
-
         List<Pair<Integer, Integer>>[][] path = new ArrayList[ROW][COL];
         List<Pair<Integer, Integer>> exits = new ArrayList<>();
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
+                dist[i][j] = Integer.MAX_VALUE;
                 path[i][j] = new ArrayList<>();
                 if (maze[i][j] == 3) {
                     exits.add(new Pair<>(i, j));
@@ -121,6 +112,7 @@ public class Djikstra {
             }
         }
         path[srcX][srcY].add(new Pair<>(srcX, srcY));
+        dist[srcX][srcY] = 0;
 
         boolean[][] visited = new boolean[ROW][COL];
 
